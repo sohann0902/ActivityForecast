@@ -11,7 +11,7 @@ import SwiftUI
 struct ActivityForecastApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+			ContentView(geocodingService: GeocodingService())
         }
     }
 }
