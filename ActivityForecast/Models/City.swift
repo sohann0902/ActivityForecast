@@ -8,7 +8,7 @@
 import SwiftUI
 
 // app level
-struct City: Identifiable {
+struct City: Identifiable, Hashable {
     let id: Int
     let name: String
     let country: String?
