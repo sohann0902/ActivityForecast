@@ -9,7 +9,7 @@ import SwiftUI
 
 struct OutdoorSightseeingScorer {
 
-    func score(
+    static func score(
         apparentTemperatureMax: Double,
         precipitationProbabilityMax: Double,
         precipitationHours: Double,
@@ -93,7 +93,7 @@ struct OutdoorSightseeingScorer {
         return min(max(score, 0), 100)
     }
 
-    private func uvPenalty(for uvIndex: Double) -> Double {
+    private static func uvPenalty(for uvIndex: Double) -> Double {
         switch uvIndex {
         case ..<3:
             return 0
@@ -108,7 +108,7 @@ struct OutdoorSightseeingScorer {
         }
     }
 
-    private func weatherPenalty(
+    private static func weatherPenalty(
         for condition: WeatherCondition
     ) -> Double {
         switch condition {

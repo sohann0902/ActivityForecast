@@ -13,3 +13,14 @@ enum Activity: Hashable {
     case skiing
     case surfing
 }
+
+extension Activity {
+    var title: String {
+        switch self {
+        case .skiing: return "Skiing"
+        case .surfing: return "Surfing"
+        case .outdoorSightseeing: return "Outdoor sightseeing"
+        case .indoorSightseeing: return "Indoor sightseeing"
+        }
+    }
+}

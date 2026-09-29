@@ -8,7 +8,7 @@
 
 struct SkiingScorer {
 
-    func score(
+    static func score(
         snowDepth: Double,
         snowfallSum: Double,
         temperatureMax: Double,
@@ -53,18 +53,10 @@ struct SkiingScorer {
             windSpeedScore * 0.4 +
             gustScore * 0.6
 
-        var snowScore =
-            snowDepthScore * 40 +
-            temperatureScore * 30 +
-            windScore * 30
+        let snowBonus = snowfallBonus(snowfallSum)
+        let conditionPenalty = weatherPenalty(for: weatherCondition)
 
-		let snowBonus = snowfallBonus(snowfallSum)
-		let conditionPenalty = weatherPenalty(for: weatherCondition)
-		
-		var score =
-			snowScore * 0.40 +
-			temperatureScore * 0.30 +
-			windScore * 0.30
+        var score = snowDepthScore * 40 + temperatureScore * 30 + windScore * 30
 
 		score += snowBonus
 		score -= conditionPenalty
@@ -72,14 +64,14 @@ struct SkiingScorer {
 		return ActivityScore(score: score)
     }
 	
-	private func hasUsableSnow(
+	 private static func hasUsableSnow(
 		snowDepth: Double,
 		snowfallSum: Double
 	) -> Bool {
 		snowDepth >= 0.03 || snowfallSum >= 2
 	}
 
-	private func snowfallBonus(_ snowfall: Double) -> Double {
+	 private static func snowfallBonus(_ snowfall: Double) -> Double {
 		switch snowfall {
 		case ..<1:
 			return 0
@@ -94,7 +86,7 @@ struct SkiingScorer {
 		}
 	}
 	
-	private func weatherPenalty(
+	private static func weatherPenalty(
 		for condition: WeatherCondition
 	) -> Double {
 		switch condition {

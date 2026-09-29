@@ -11,7 +11,6 @@ import SwiftUI
 class CitySearchViewModel {
 	var searchText = "Mum"
 	var state : CitySearchState = .idle
-	var selectedCity: City?
 	
 	private let geocodingService: GeocodingServiceProtocol
 	
@@ -47,9 +46,4 @@ class CitySearchViewModel {
 		}
 	}
 	
-	func selectCity(_ city: City) {
-		selectedCity = city
-		searchText = city.name
-		state = .idle
-	}
 }

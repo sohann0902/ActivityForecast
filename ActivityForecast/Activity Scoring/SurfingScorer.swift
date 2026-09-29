@@ -96,9 +96,9 @@ struct SurfingScorer {
         // MARK: - 5. Weighted base score
 
         var score =
-            (windScore * 0.35) +
-            (precipitationScore * 0.30) +
-            (temperatureScore * 0.20) +
+            (windScore * 35) +
+            (precipitationScore * 30) +
+            (temperatureScore * 20) +
             (sunshineScore * 0.15)
 
 

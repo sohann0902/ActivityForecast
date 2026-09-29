@@ -10,6 +10,6 @@ import SwiftUI
 enum ForecastState {
     case idle
     case loading
-    case loaded(WeatherForecast)
+    case loaded([DailyActivityRanking])
     case error(String)
 }

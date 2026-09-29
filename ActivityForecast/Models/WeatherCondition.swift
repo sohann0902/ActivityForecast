@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum WeatherCondition {
+enum WeatherCondition : String {
     case clear
     case mainlyClear
     case partlyCloudy

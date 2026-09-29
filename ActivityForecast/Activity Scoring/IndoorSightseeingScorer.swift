@@ -42,7 +42,7 @@ struct IndoorSightseeingScorer {
             (precipitationDurationScore * 0.45)
 
         // Maximum precipitation penalty = 15
-        score -= (100 - precipitationScore) * 0.15
+        score -= (1 - precipitationScore) * 15
 
 
         // MARK: - 2. Wind inconvenience
@@ -64,7 +64,7 @@ struct IndoorSightseeingScorer {
             (gustScore * 0.4)
 
         // Maximum wind penalty = 15
-        score -= (100 - windScore) * 0.15
+        score -= (1 - windScore) * 15
 
 
         // MARK: - 3. Temperature inconvenience
@@ -78,7 +78,7 @@ struct IndoorSightseeingScorer {
         )
 
         // Maximum temperature penalty = 10
-        score -= (100 - temperatureScore) * 0.10
+        score -= (1 - temperatureScore) * 10
 
 
         // MARK: - 4. Severe weather penalty
