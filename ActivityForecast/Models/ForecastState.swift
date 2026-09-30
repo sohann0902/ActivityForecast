@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum ForecastState {
+enum ForecastState: Equatable {
     case idle
     case loading
     case loaded([DailyActivityRanking])

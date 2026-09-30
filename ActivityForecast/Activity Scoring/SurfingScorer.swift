@@ -7,160 +7,206 @@
 
 import SwiftUI
 
-struct SurfingScorer {
+struct SurfScorer {
 
-    static func score(
-        apparentTemperatureMax: Double,
-        precipitationSum: Double,
-        precipitationHours: Double,
-        precipitationProbabilityMax: Double,
-        windSpeedMax: Double,
-        windGustsMax: Double,
-        sunshineDuration: Double,
-        daylightDuration: Double,
-        weatherCondition: WeatherCondition
-    ) -> Double {
+	static func score(for weather: DailyWeather) -> Double {
 
-        // MARK: - 1. Wind
+		let wind = windScore(for: weather)
+		let temperature = temperatureScore(for: weather)
+		let sunshine = sunshineScore(for: weather)
 
-        let windSpeedScore = ScoreNormalizer.lowerIsBetter(
-            value: windSpeedMax,
-            idealMaximum: 12,
-            worstValue: 45
-        )
+		let penalty = weatherPenalty(for: weather)
 
-        let gustScore = ScoreNormalizer.lowerIsBetter(
-            value: windGustsMax,
-            idealMaximum: 20,
-            worstValue: 65
-        )
+		let finalScore =
+			wind +
+			temperature +
+			sunshine -
+			penalty
 
-        let windScore =
-            (windSpeedScore * 0.6) +
-            (gustScore * 0.4)
+		return finalScore.clamped(to: 0...100)
+	}
 
 
-        // MARK: - 2. Precipitation
+	// MARK: - Wind
+	//
+	// Main factor for our forecast-only surf suitability model.
+	// Maximum: 50 points
+	private static func windScore(
+		for weather: DailyWeather
+	) -> Double {
 
-        let probabilityScore = ScoreNormalizer.lowerIsBetter(
-            value: precipitationProbabilityMax,
-            idealMaximum: 20,
-            worstValue: 100
-        )
+		let wind = weather.windSpeedMax
 
-        let durationScore = ScoreNormalizer.lowerIsBetter(
-            value: precipitationHours,
-            idealMaximum: 1,
-            worstValue: 12
-        )
+		switch wind {
+		case ..<15:
+			return 60
 
-        let amountScore = ScoreNormalizer.lowerIsBetter(
-            value: precipitationSum,
-            idealMaximum: 1,
-            worstValue: 20
-        )
+		case 15..<25:
+			return 48
 
-        let precipitationScore =
-            (probabilityScore * 0.30) +
-            (durationScore * 0.35) +
-            (amountScore * 0.35)
+		case 25..<35:
+			return 30
 
+		case 35..<50:
+			return 12
 
-        // MARK: - 3. Apparent temperature
+		case 50..<65:
+			return 0
 
-        let temperatureScore = ScoreNormalizer.idealRange(
-            value: apparentTemperatureMax,
-            minimum: 5,
-            idealMinimum: 18,
-            idealMaximum: 30,
-            maximum: 38
-        )
+		default:
+			return -20
+		}
+	}
 
 
-        // MARK: - 4. Sunshine
+	// MARK: - Temperature
+	//
+	// Comfort factor only.
+	// Maximum: 30 points
 
-        let sunshineRatio: Double
+	private static func temperatureScore(
+		for weather: DailyWeather
+	) -> Double {
 
-        if daylightDuration > 0 {
-            sunshineRatio = min(
-                max(sunshineDuration / daylightDuration, 0),
-                1
-            )
-        } else {
-            sunshineRatio = 0
-        }
+		let apparentTemperature =
+			(
+				weather.apparentTemperatureMax +
+				weather.apparentTemperatureMin
+			) / 2
 
-        let sunshineScore = sunshineRatio * 100
+		switch apparentTemperature {
 
+		case 20...30:
+			return 30
 
-        // MARK: - 5. Weighted base score
+		case 15..<20:
+			return 24
 
-        var score =
-            (windScore * 35) +
-            (precipitationScore * 30) +
-            (temperatureScore * 20) +
-            (sunshineScore * 0.15)
+		case 10..<15:
+			return 16
 
+		case 5..<10:
+			return 8
 
-        // MARK: - 6. Weather penalty
+		case ..<5:
+			return -5
 
-        score -= weatherPenalty(for: weatherCondition)
+		case 30...35:
+			return 20
 
+		case 35...40:
+			return 8
 
-        // MARK: - 7. Clamp
-
-        return min(max(score, 0), 100)
-    }
-
-
-    // MARK: - Weather Penalty
-
-    private static func weatherPenalty(
-        for condition: WeatherCondition
-    ) -> Double {
-
-        switch condition {
-
-        case .clear,
-             .mainlyClear,
-             .partlyCloudy,
-             .overcast,
-             .drizzle,
-             .rain,
-             .rainShowers:
-
-            return 0
+		default:
+			return -10
+		}
+	}
 
 
-        case .fog:
-            return 10
+	// MARK: - Sunshine
+	//
+	// Small modifier only.
+	// Maximum: 20 points
+	private static func sunshineScore(
+		for weather: DailyWeather
+	) -> Double {
 
-        case .rimeFog:
-            return 15
+		guard weather.daylightDuration > 0 else {
+			return 0
+		}
+
+		let ratio =
+			weather.sunshineDuration /
+			weather.daylightDuration
+
+		switch ratio {
+		case 0.7...:
+			return 10
+
+		case 0.4..<0.7:
+			return 7
+
+		case 0.2..<0.4:
+			return 4
+
+		default:
+			return 1
+		}
+	}
 
 
-        case .snow,
-             .snowShowers:
+	// MARK: - Weather Penalties
 
-            return 10
+	private static func weatherPenalty(
+		for weather: DailyWeather
+	) -> Double {
 
-
-        case .freezingDrizzle:
-            return 20
-
-        case .freezingRain:
-            return 30
+		var penalty = 0.0
 
 
-        case .thunderstorm:
-            return 30
+		// MARK: Wind Gusts
 
-        case .thunderstormWithHail:
-            return 40
+		if weather.windGustsMax >= 70 {
+			penalty += 20
+
+		} else if weather.windGustsMax >= 55 {
+			penalty += 10
+		}
 
 
-        case .unknown:
-            return 0
-        }
-    }
+		// MARK: Precipitation
+
+		if weather.precipitationSum >= 30 {
+			penalty += 20
+
+		} else if weather.precipitationSum >= 15 {
+			penalty += 12
+
+		} else if weather.precipitationSum >= 5 {
+			penalty += 5
+		}
+
+
+		// MARK: Weather Code
+
+		switch weather.weatherCode {
+
+		// Fog
+		case 45, 48:
+			penalty += 8
+
+		// Heavy rain
+		case 65:
+			penalty += 15
+
+		// Rain showers
+		case 80:
+			penalty += 5
+
+		case 81:
+			penalty += 10
+
+		case 82:
+			penalty += 18
+
+		// Thunderstorm
+		case 95:
+			penalty += 50
+
+		// Thunderstorm with hail
+		case 96, 99:
+			penalty += 65
+
+		default:
+			break
+		}
+
+
+		// MARK: UV
+
+		if weather.uvIndexMax >= 11 {
+			penalty += 5
+		}
+		return penalty
+	}
 }

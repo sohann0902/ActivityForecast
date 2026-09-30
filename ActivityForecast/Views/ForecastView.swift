@@ -21,32 +21,27 @@ struct ForecastView: View {
     private var content: some View {
         switch viewModel.state {
         case .idle, .loading:
-            ProgressView("Loading 7-day forecast…")
+            ProgressView()
         case .loaded(let days):
             List {
                 Section {
-                    Text("Activities ranked by weather suitability. Surfing scores use weather only; they do not confirm surf spots or wave conditions.")
-                        .font(.footnote)
+					Text("Activity rankings are based on weather suitability only and assume the selected location offers access to activities such as skiing and surfing.")
+                        .font(.caption)
+						.italic()
                         .foregroundStyle(.secondary)
+						.listRowBackground(Color.clear)
                 }
                 ForEach(days) { day in
                     Section(day.date) {
                         ForEach(Array(day.activities.enumerated()), id: \.element.id) { index, result in
-                            HStack {
-                                Text("\(index + 1). \(result.activity.title)")
-                                Spacer()
-                                VStack(alignment: .trailing) {
-                                    Text("\(Int(result.score.score))/100")
-                                        .monospacedDigit()
-                                    Text(result.score.rating.rawValue)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
+							
+							RankingCell(result: result)
                         }
                     }
                 }
             }
+			.scrollContentBackground(.hidden)
+			
         case .error(let message):
             ContentUnavailableView {
                 Label("Unable to load forecast", systemImage: "exclamationmark.triangle")
@@ -59,4 +54,34 @@ struct ForecastView: View {
             }
         }
     }
+}
+
+
+struct RankingCell: View {
+	let result: ActivityResult
+	
+	var body: some View {
+		HStack {
+			Image(result.activity.imageName)
+				.resizable()
+				.scaledToFit()
+				.frame(width: 40)
+				.padding(4)
+				.background(result.activity.background)
+				.clipShape(RoundedRectangle(cornerRadius: 5))
+			
+			
+			VStack(alignment: .leading) {
+				Text(result.activity.title)
+					.font(.headline)
+				ProgressView(value: result.score, total: 100)
+					.frame(width: 60)
+			}
+			
+			Spacer()
+			
+			Text("\(Int(result.score))")
+				.font(.headline)
+		}
+	}
 }

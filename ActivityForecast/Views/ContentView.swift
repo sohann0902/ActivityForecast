@@ -35,11 +35,19 @@ struct ContentView: View {
 		NavigationStack {
 			VStack {
 				
+				Text("Search for a city")
+					.font(.title)
+					.fontWeight(.black)
+					.multilineTextAlignment(.leading)
+					.frame(maxWidth: .infinity, alignment: .leading)
+					.padding(.horizontal)
+					
+				
 				TextField("Search city", text: $viewModel.searchText)
 					.padding()
 					.background(.secondary.opacity(0.3))
 					.clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-					.padding()
+					.padding(.horizontal)
 					.textInputAutocapitalization(.words)
 					.focused($isFocused)
 				
@@ -48,31 +56,50 @@ struct ContentView: View {
 				Spacer()
 			}
 			.scrollDismissesKeyboard(.interactively)
-			.onChange(of: viewModel.searchText) { _, newValue in
+			.task(id: viewModel.searchText) {
+				let query = viewModel.searchText
+					.trimmingCharacters(in: .whitespacesAndNewlines)
 
-				searchTask?.cancel()
-
-				searchTask = Task {
-
-					let query = newValue
-						.trimmingCharacters(in: .whitespacesAndNewlines)
-
-					if query.count < 2 {
-						await viewModel.searchCities()
-						return
-					}
-
-					try? await Task.sleep(
-						for: .milliseconds(400)
-					)
-
-					guard !Task.isCancelled else {
-						return
-					}
-
+				if query.count < 2 {
 					await viewModel.searchCities()
+					return
 				}
+
+				try? await Task.sleep(
+					for: .milliseconds(400)
+				)
+
+				guard !Task.isCancelled else {
+					return
+				}
+
+				await viewModel.searchCities()
 			}
+//			.onChange(of: viewModel.searchText) { _, newValue in
+//
+//				searchTask?.cancel()
+//
+//				searchTask = Task {
+//
+//					let query = newValue
+//						.trimmingCharacters(in: .whitespacesAndNewlines)
+//
+//					if query.count < 2 {
+//						await viewModel.searchCities()
+//						return
+//					}
+//
+//					try? await Task.sleep(
+//						for: .milliseconds(400)
+//					)
+//
+//					guard !Task.isCancelled else {
+//						return
+//					}
+//
+//					await viewModel.searchCities()
+//				}
+//			}
 			.onAppear {
 				isFocused = true
 			}

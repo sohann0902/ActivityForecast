@@ -8,13 +8,13 @@
 
 import SwiftUI
 
-struct WeatherForecast {
+struct WeatherForecast: Equatable {
     let elevation: Double
     let timezone: String
     let days: [DailyWeather]
 }
 
-struct DailyWeather: Identifiable {
+struct DailyWeather: Identifiable, Equatable {
 
     var id: String { date }
 
@@ -29,6 +29,7 @@ struct DailyWeather: Identifiable {
     let apparentTemperatureMin: Double
 
     let snowfallSum: Double
+    /// Average snow depth during skiing hours, in centimetres.
     let snowDepth: Double
 
     let precipitationSum: Double
@@ -125,7 +126,7 @@ extension ForecastResponseDTO {
 	func toDomain() -> WeatherForecast {
 
 		let snowDepthByDate =
-			hourly.averageSnowDepthByDate()
+			hourly.averageSnowDepthCentimetresByDate()
 
 		let days = daily.time.indices.map { index in
 
@@ -194,28 +195,45 @@ extension ForecastResponseDTO {
 
 extension HourlyWeatherDTO {
 
-	func averageSnowDepthByDate() -> [String: Double] {
+	func averageSnowDepthCentimetresByDate() -> [String: Double] {
 
-		var grouped: [String: [Double]] = [:]
-
-		for (time, depth) in zip(time, snowDepth) {
-
-			let date = String(
-				time.prefix(10)
-			)
-
-			grouped[date, default: []]
-				.append(depth)
-		}
-
-		return grouped.mapValues { values in
-
-			guard !values.isEmpty else {
-				return 0
+		let hoursPerDay = 24
+		let skiingHours = 8...17
+		
+		var result: [String: Double] = [:]
+		
+		for startIndex in stride(from: 0, to: snowDepth.count, by: hoursPerDay) {
+			
+			let endIndex = min(startIndex + hoursPerDay, snowDepth.count)
+			
+			guard startIndex < time.count else {
+				continue
 			}
-
-			return values.reduce(0, +)
-				/ Double(values.count)
+			
+			let date = String(time[startIndex].prefix(10))
+			
+			let dayDepths = Array(snowDepth[startIndex..<endIndex])
+			
+			let skiingDepths = skiingHours.compactMap { hour -> Double? in
+				guard hour < dayDepths.count else {
+					return nil
+				}
+				
+				return dayDepths[hour] * 100 // API metres -> domain centimetres
+			}
+			
+			guard !skiingDepths.isEmpty else {
+				result[date] = 0
+				continue
+			}
+			
+			let average =
+			skiingDepths.reduce(0, +) /
+			Double(skiingDepths.count)
+			
+			result[date] = average
 		}
+		
+		return result
 	}
 }

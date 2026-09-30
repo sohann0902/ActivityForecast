@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum CitySearchState {
+enum CitySearchState: Equatable {
     case idle
     case loading
     case loaded([City])
