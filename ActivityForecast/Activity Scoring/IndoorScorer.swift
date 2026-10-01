@@ -5,6 +5,7 @@
 //  Created by Sohan Maurya on 29/09/26.
 //
 
+import Foundation
 
 struct IndoorScorer {
 
@@ -31,11 +32,7 @@ struct IndoorScorer {
 	}
 
 
-	// MARK: - Precipitation
-	//
 	// Rain makes indoor activities more attractive.
-	// Long-duration rain matters more than a short shower.
-
 	private static func precipitationBonus(
 		for weather: DailyWeather
 	) -> Double {
@@ -79,11 +76,7 @@ struct IndoorScorer {
 	}
 
 
-	// MARK: - Temperature
-	//
-	// Comfortable weather adds little or nothing.
 	// Uncomfortable heat/cold makes indoor activities more appealing.
-
 	private static func temperatureBonus(
 		for weather: DailyWeather
 	) -> Double {
@@ -96,25 +89,22 @@ struct IndoorScorer {
 
 		switch apparentTemperature {
 
-		// Comfortable outside
+
 		case 15...28:
 			return 0
 
-		// Slightly uncomfortable
 		case 8..<15:
 			return 5
 
 		case 28..<33:
 			return 5
 
-		// Clearly uncomfortable
 		case 2..<8:
 			return 10
 
 		case 33..<38:
 			return 10
 
-		// Very uncomfortable
 		case ..<2:
 			return 15
 
@@ -124,11 +114,7 @@ struct IndoorScorer {
 	}
 
 
-	// MARK: - Wind
-	//
 	// Moderate wind makes indoor activities more attractive.
-	// Extreme wind becomes an access/safety problem instead.
-
 	private static func windAdjustment(
 		for weather: DailyWeather
 	) -> Double {
@@ -139,25 +125,22 @@ struct IndoorScorer {
 			return 0
 
 		case 20..<35:
-			return 4
+			return 2
 
 		case 35..<50:
-			return 8
-
-		case 50..<65:
 			return 4
 
+		case 50..<65:
+			return 2
+
 		default:
-			return -10
+			return -3
 		}
 	}
 
 
-	// MARK: - Sunshine
-	//
-	// Small modifier only.
-	// A gloomy day can make indoor activities slightly more appealing.
 
+	// A cloudy day can make indoor activities slightly more appealing.
 	private static func lowSunshineBonus(
 		for weather: DailyWeather
 	) -> Double {
@@ -184,11 +167,7 @@ struct IndoorScorer {
 	}
 
 
-	// MARK: - Severe Weather
-	//
-	// Dangerous weather should NOT make indoor score keep increasing,
-	// because travelling to indoor venues may also be unsafe.
-
+	// Dangerous weather should NOT make indoor score keep increasing, because travelling to indoor venues may also be unsafe.
 	private static func severeWeatherPenalty(
 		for weather: DailyWeather
 	) -> Double {

@@ -1,3 +1,11 @@
+//
+//  DailyActivityRanking.swift
+//  ActivityForecast
+//
+//  Created by Sohan Maurya on 29/09/26.
+//
+
+import Foundation
 
 struct DailyActivityRanking: Identifiable, Equatable {
 	var id: String { date }

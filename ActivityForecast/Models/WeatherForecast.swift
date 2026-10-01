@@ -5,6 +5,7 @@
 //  Created by Sohan Maurya on 29/09/26.
 //
 
+import Foundation
 
 struct WeatherForecast: Equatable {
     let days: [DailyWeather]
@@ -22,7 +23,7 @@ struct DailyWeather: Identifiable, Equatable {
     let apparentTemperatureMin: Double
 
     let snowfallSum: Double
-    /// Average snow depth during skiing hours, in centimetres.
+    // in centimetres
     let snowDepth: Double
 
     let precipitationSum: Double
@@ -183,7 +184,7 @@ extension HourlyWeatherDTO {
 					return nil
 				}
 				
-				return dayDepths[hour] * 100 // API metres -> domain centimetres
+				return dayDepths[hour] * 100 // metres ->  centimetres
 			}
 			
 			guard !skiingDepths.isEmpty else {

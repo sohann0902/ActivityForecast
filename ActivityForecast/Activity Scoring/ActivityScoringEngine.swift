@@ -5,6 +5,7 @@
 //  Created by Sohan Maurya on 29/09/26.
 //
 
+import Foundation
 
 protocol ActivityScoringEngineProtocol {
     func score(forecast: WeatherForecast) -> [DailyActivityRanking]

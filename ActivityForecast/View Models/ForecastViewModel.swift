@@ -13,7 +13,7 @@ final class ForecastViewModel {
         scoringEngine: ActivityScoringEngineProtocol
     ) {
         self.weatherService = weatherService
-        self.scoringEngine = scoringEngine 
+        self.scoringEngine = scoringEngine
     }
 
     func fetchForecast(for city: City) async {

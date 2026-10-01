@@ -5,15 +5,16 @@
 //  Created by Sohan Maurya on 29/09/26.
 //
 
+import Foundation
 
 struct OutdoorScorer {
 
 	static func score(for weather: DailyWeather) -> Double {
 
-		let temperature = temperatureScore(for: weather) // max 45
-		let wind = windScore(for: weather)               // max 35
-		let sunshine = sunshineScore(for: weather)       // max 20
-
+		let temperature = temperatureScore(for: weather)
+		let wind = windScore(for: weather)
+		let sunshine = sunshineScore(for: weather)
+		
 		let precipitation = precipitationPenalty(for: weather)
 		let gusts = gustPenalty(for: weather)
 		let uv = uvPenalty(for: weather)
@@ -30,9 +31,6 @@ struct OutdoorScorer {
 
 		return finalScore.clamped(to: 0...100)
 	}
-
-
-	// MARK: - Temperature
 
 	private static func temperatureScore(
 		for weather: DailyWeather
@@ -75,9 +73,6 @@ struct OutdoorScorer {
 		}
 	}
 
-
-	// MARK: - Wind
-
 	private static func windScore(
 		for weather: DailyWeather
 	) -> Double {
@@ -103,9 +98,6 @@ struct OutdoorScorer {
 			return -15
 		}
 	}
-
-
-	// MARK: - Sunshine
 
 	private static func sunshineScore(
 		for weather: DailyWeather
@@ -135,16 +127,12 @@ struct OutdoorScorer {
 		}
 	}
 
-
-	// MARK: - Precipitation
-
 	private static func precipitationPenalty(
 		for weather: DailyWeather
 	) -> Double {
 
 		var penalty = 0.0
 
-		// Total precipitation amount
 		switch weather.precipitationSum {
 
 		case ..<1:
@@ -163,7 +151,6 @@ struct OutdoorScorer {
 			penalty += 35
 		}
 
-		// How long precipitation lasts
 		switch weather.precipitationHours {
 
 		case ..<2:
@@ -181,9 +168,6 @@ struct OutdoorScorer {
 
 		return penalty
 	}
-
-
-	// MARK: - Wind Gusts
 
 	private static func gustPenalty(
 		for weather: DailyWeather
@@ -205,9 +189,6 @@ struct OutdoorScorer {
 		}
 	}
 
-
-	// MARK: - UV
-
 	private static func uvPenalty(
 		for weather: DailyWeather
 	) -> Double {
@@ -226,12 +207,7 @@ struct OutdoorScorer {
 	}
 
 
-	// MARK: - Severe Weather
-	//
-	// Ordinary rain is intentionally NOT handled here.
-	// Rain amount and duration are already accounted for
-	// by precipitationPenalty.
-
+	// Ordinary Rain amount and duration are already accounted for by precipitationPenalty.
 	private static func weatherSeverityPenalty(
 		for weather: DailyWeather
 	) -> Double {

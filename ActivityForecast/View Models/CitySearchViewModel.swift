@@ -13,7 +13,6 @@ final class CitySearchViewModel {
     var searchText = "Mum" {
         didSet {
             guard searchText != oldValue else { return }
-            // Invalidate immediately, including during the view's debounce delay.
             activeRequestID = nil
             state = .idle
         }
@@ -28,7 +27,6 @@ final class CitySearchViewModel {
     }
 
     func searchCities() async {
-        // A cancelled task must not invalidate a newer search.
         guard !Task.isCancelled else { return }
 
         let requestID = UUID()
@@ -44,7 +42,7 @@ final class CitySearchViewModel {
 
         do {
             let cities = try await geocodingService.searchCities(query: query)
-            // Some service implementations can return even after cancellation.
+            
             try Task.checkCancellation()
             guard activeRequestID == requestID else { return }
             state = cities.isEmpty ? .empty : .loaded(cities)

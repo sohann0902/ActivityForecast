@@ -5,6 +5,7 @@
 //  Created by Sohan Maurya on 29/09/26.
 //
 
+import Foundation
 
 struct SurfScorer {
 
@@ -25,11 +26,6 @@ struct SurfScorer {
 		return finalScore.clamped(to: 0...100)
 	}
 
-
-	// MARK: - Wind
-	//
-	// Main factor for our forecast-only surf suitability model.
-	// Maximum: 50 points
 	private static func windScore(
 		for weather: DailyWeather
 	) -> Double {
@@ -56,12 +52,6 @@ struct SurfScorer {
 			return -20
 		}
 	}
-
-
-	// MARK: - Temperature
-	//
-	// Comfort factor only.
-	// Maximum: 30 points
 
 	private static func temperatureScore(
 		for weather: DailyWeather
@@ -101,11 +91,6 @@ struct SurfScorer {
 		}
 	}
 
-
-	// MARK: - Sunshine
-	//
-	// Small modifier only.
-	// Maximum: 20 points
 	private static func sunshineScore(
 		for weather: DailyWeather
 	) -> Double {
@@ -134,7 +119,7 @@ struct SurfScorer {
 	}
 
 
-	// MARK: - Weather Penalties
+	// Weather Penalties
 
 	private static func weatherPenalty(
 		for weather: DailyWeather
@@ -166,7 +151,7 @@ struct SurfScorer {
 		}
 
 
-		// MARK: Weather Code
+		// weather Code
 
 		switch weather.weatherCode {
 
@@ -200,9 +185,7 @@ struct SurfScorer {
 			break
 		}
 
-
-		// MARK: UV
-
+		// uv
 		if weather.uvIndexMax >= 11 {
 			penalty += 5
 		}
