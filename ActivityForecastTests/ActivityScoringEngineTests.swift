@@ -59,8 +59,6 @@ final class ActivityScoringEngineTests: XCTestCase {
         let engine = ActivityScoringEngine()
 
         let forecast = WeatherForecast(
-            elevation: 10,
-            timezone: "Asia/Kolkata",
             days: [
                 makeDay(date: "2026-10-01"),
                 makeDay(date: "2026-10-02"),
@@ -77,8 +75,6 @@ final class ActivityScoringEngineTests: XCTestCase {
         let engine = ActivityScoringEngine()
 
         let forecast = WeatherForecast(
-            elevation: 10,
-            timezone: "Asia/Kolkata",
             days: [
                 makeDay(date: "2026-10-01"),
                 makeDay(date: "2026-10-02"),
@@ -102,8 +98,6 @@ final class ActivityScoringEngineTests: XCTestCase {
         let engine = ActivityScoringEngine()
 
         let forecast = WeatherForecast(
-            elevation: 10,
-            timezone: "Asia/Kolkata",
             days: []
         )
 
@@ -111,4 +105,16 @@ final class ActivityScoringEngineTests: XCTestCase {
 
         XCTAssertTrue(result.isEmpty)
     }
+    // Preserve the ranking fixtures while sharing DailyWeather construction.
+    private func makeDay(date: String = "2026-10-01") -> DailyWeather {
+        makeWeather(
+            date: date,
+            apparentTemperatureMax: 20,
+            apparentTemperatureMin: 10,
+            uvIndexMax: 3,
+            sunshineDuration: 20_000,
+            daylightDuration: 40_000
+        )
+    }
+
 }

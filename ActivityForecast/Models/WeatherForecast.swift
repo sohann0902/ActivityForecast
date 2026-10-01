@@ -6,11 +6,7 @@
 //
 
 
-import SwiftUI
-
 struct WeatherForecast: Equatable {
-    let elevation: Double
-    let timezone: String
     let days: [DailyWeather]
 }
 
@@ -22,9 +18,6 @@ struct DailyWeather: Identifiable, Equatable {
 
     let weatherCode: Int
 
-    let temperatureMax: Double
-    let temperatureMin: Double
-
     let apparentTemperatureMax: Double
     let apparentTemperatureMin: Double
 
@@ -34,11 +27,9 @@ struct DailyWeather: Identifiable, Equatable {
 
     let precipitationSum: Double
     let precipitationHours: Double
-    let precipitationProbabilityMax: Double
 
     let windSpeedMax: Double
     let windGustsMax: Double
-    let windDirectionDominant: Double
 
     let uvIndexMax: Double
 
@@ -47,9 +38,6 @@ struct DailyWeather: Identifiable, Equatable {
 }
 
 struct ForecastResponseDTO: Decodable {
-
-	let elevation: Double
-	let timezone: String
 
 	let daily: DailyWeatherDTO
 	let hourly: HourlyWeatherDTO
@@ -61,9 +49,6 @@ struct DailyWeatherDTO: Decodable {
 
 	let weatherCode: [Int]
 
-	let temperatureMax: [Double]
-	let temperatureMin: [Double]
-
 	let apparentTemperatureMax: [Double]
 	let apparentTemperatureMin: [Double]
 
@@ -71,11 +56,9 @@ struct DailyWeatherDTO: Decodable {
 
 	let precipitationSum: [Double]
 	let precipitationHours: [Double]
-	let precipitationProbabilityMax: [Double]
 
 	let windSpeedMax: [Double]
 	let windGustsMax: [Double]
-	let windDirectionDominant: [Double]
 
 	let uvIndexMax: [Double]
 
@@ -87,9 +70,6 @@ struct DailyWeatherDTO: Decodable {
 
 		case weatherCode = "weather_code"
 
-		case temperatureMax = "temperature_2m_max"
-		case temperatureMin = "temperature_2m_min"
-
 		case apparentTemperatureMax = "apparent_temperature_max"
 		case apparentTemperatureMin = "apparent_temperature_min"
 
@@ -97,11 +77,9 @@ struct DailyWeatherDTO: Decodable {
 
 		case precipitationSum = "precipitation_sum"
 		case precipitationHours = "precipitation_hours"
-		case precipitationProbabilityMax = "precipitation_probability_max"
 
 		case windSpeedMax = "wind_speed_10m_max"
 		case windGustsMax = "wind_gusts_10m_max"
-		case windDirectionDominant = "wind_direction_10m_dominant"
 
 		case uvIndexMax = "uv_index_max"
 
@@ -138,12 +116,6 @@ extension ForecastResponseDTO {
 				weatherCode:
 					daily.weatherCode[index],
 
-				temperatureMax:
-					daily.temperatureMax[index],
-
-				temperatureMin:
-					daily.temperatureMin[index],
-
 				apparentTemperatureMax:
 					daily.apparentTemperatureMax[index],
 
@@ -162,17 +134,11 @@ extension ForecastResponseDTO {
 				precipitationHours:
 					daily.precipitationHours[index],
 
-				precipitationProbabilityMax:
-					daily.precipitationProbabilityMax[index],
-
 				windSpeedMax:
 					daily.windSpeedMax[index],
 
 				windGustsMax:
 					daily.windGustsMax[index],
-
-				windDirectionDominant:
-					daily.windDirectionDominant[index],
 
 				uvIndexMax:
 					daily.uvIndexMax[index],
@@ -186,8 +152,6 @@ extension ForecastResponseDTO {
 		}
 
 		return WeatherForecast(
-			elevation: elevation,
-			timezone: timezone,
 			days: days
 		)
 	}

@@ -1,4 +1,3 @@
-import Foundation
 
 struct DailyActivityRanking: Identifiable, Equatable {
 	var id: String { date }

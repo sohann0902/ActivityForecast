@@ -33,7 +33,7 @@ struct ForecastView: View {
                 }
                 ForEach(days) { day in
                     Section(day.date) {
-                        ForEach(Array(day.activities.enumerated()), id: \.element.id) { index, result in
+                        ForEach(day.activities) { result in
 							
 							RankingCell(result: result)
                         }
@@ -76,12 +76,25 @@ struct RankingCell: View {
 					.font(.headline)
 				ProgressView(value: result.score, total: 100)
 					.frame(width: 60)
+					.tint(progressBarColor(score: result.score))
 			}
 			
 			Spacer()
 			
 			Text("\(Int(result.score))")
 				.font(.headline)
+		}
+	}
+	
+	private func progressBarColor(score: Double) -> Color {
+		if score <= 30 {
+			return .red
+		} else if score <= 60 {
+			return .yellow
+		} else if score <= 80 {
+			return .green.opacity(0.5)
+		} else {
+			return .green
 		}
 	}
 }

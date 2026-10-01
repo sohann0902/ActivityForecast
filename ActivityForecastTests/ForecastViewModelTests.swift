@@ -79,7 +79,7 @@ final class ForecastViewModelTests: XCTestCase {
 	
 	private func makeForecast() -> WeatherForecast {
 		
-		WeatherForecast(elevation: 14, timezone: "IST", days: [])
+		WeatherForecast(days: [])
 	}
 	
 	private func makeRankings() -> [DailyActivityRanking] {

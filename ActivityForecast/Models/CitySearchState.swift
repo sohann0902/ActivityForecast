@@ -5,7 +5,6 @@
 //  Created by Sohan Maurya on 28/09/26.
 //
 
-import SwiftUI
 
 enum CitySearchState: Equatable {
     case idle

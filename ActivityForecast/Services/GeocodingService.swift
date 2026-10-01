@@ -5,7 +5,7 @@
 //  Created by Sohan Maurya on 28/09/26.
 //
 
-import SwiftUI
+import Foundation
 
 protocol GeocodingServiceProtocol {
     func searchCities(query: String) async throws -> [City]

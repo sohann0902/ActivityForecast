@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ContentView: View {
 	@State private var viewModel: CitySearchViewModel
-	@State private var searchTask: Task<Void, Never>?
 	@FocusState var isFocused
 	private let weatherService: WeatherServiceProtocol
 	private let activityScoringEngine: ActivityScoringEngineProtocol
@@ -110,7 +109,7 @@ struct ContentView: View {
 	private var searchResults: some View {
 		switch viewModel.state {
 		case .idle:
-			Text("Search for a city")
+			EmptyView()
 			
 		case .loading:
 			ProgressView()

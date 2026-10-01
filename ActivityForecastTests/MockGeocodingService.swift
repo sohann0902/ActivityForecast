@@ -5,7 +5,6 @@
 //  Created by Sohan Maurya on 30/09/26.
 //
 
-import XCTest
 @testable import ActivityForecast
 
 final class MockGeocodingService: GeocodingServiceProtocol {

@@ -5,7 +5,6 @@
 //  Created by Sohan Maurya on 29/09/26.
 //
 
-import SwiftUI
 
 enum ForecastState: Equatable {
     case idle

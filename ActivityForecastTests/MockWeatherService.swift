@@ -5,7 +5,6 @@
 //  Created by Sohan Maurya on 01/10/26.
 //
 
-import XCTest
 @testable import ActivityForecast
 
 final class MockWeatherService: WeatherServiceProtocol {
