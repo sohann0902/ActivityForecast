@@ -36,7 +36,7 @@ struct ContentView: View {
 		NavigationStack {
 			VStack {
 				
-				Text("Eg. New York")
+				Text("Search for a city")
 					.font(.title)
 					.fontWeight(.black)
 					.multilineTextAlignment(.leading)
@@ -44,7 +44,7 @@ struct ContentView: View {
 					.padding(.horizontal)
 					
 				
-				TextField("Search city", text: $viewModel.searchText)
+				TextField("Eg. New York", text: $viewModel.searchText)
 					.padding()
 					.background(.secondary.opacity(0.3))
 					.clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
