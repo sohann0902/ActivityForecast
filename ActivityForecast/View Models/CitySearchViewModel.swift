@@ -10,7 +10,7 @@ import Observation
 
 @Observable
 final class CitySearchViewModel {
-    var searchText = "Mum" {
+    var searchText = "" {
         didSet {
             guard searchText != oldValue else { return }
             activeRequestID = nil

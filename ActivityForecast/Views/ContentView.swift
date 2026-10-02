@@ -13,6 +13,8 @@ struct ContentView: View {
 	private let weatherService: WeatherServiceProtocol
 	private let activityScoringEngine: ActivityScoringEngineProtocol
 	
+	@State private var searchTask: Task<Void, Never>?
+	
 	init(
 		geocodingService: GeocodingServiceProtocol,
 		weatherService: WeatherServiceProtocol,
@@ -34,7 +36,7 @@ struct ContentView: View {
 		NavigationStack {
 			VStack {
 				
-				Text("Search for a city")
+				Text("Eg. New York")
 					.font(.title)
 					.fontWeight(.black)
 					.multilineTextAlignment(.leading)
@@ -55,50 +57,31 @@ struct ContentView: View {
 				Spacer()
 			}
 			.scrollDismissesKeyboard(.interactively)
-			.task(id: viewModel.searchText) {
-				let query = viewModel.searchText
-					.trimmingCharacters(in: .whitespacesAndNewlines)
+			.onChange(of: viewModel.searchText) { _, newValue in
 
-				if query.count < 2 {
+				searchTask?.cancel()
+
+				searchTask = Task {
+
+					let query = newValue
+						.trimmingCharacters(in: .whitespacesAndNewlines)
+
+					if query.count < 2 {
+						await viewModel.searchCities()
+						return
+					}
+
+					try? await Task.sleep(
+						for: .milliseconds(400)
+					)
+
+					guard !Task.isCancelled else {
+						return
+					}
+
 					await viewModel.searchCities()
-					return
 				}
-
-				try? await Task.sleep(
-					for: .milliseconds(400)
-				)
-
-				guard !Task.isCancelled else {
-					return
-				}
-
-				await viewModel.searchCities()
 			}
-//			.onChange(of: viewModel.searchText) { _, newValue in
-//
-//				searchTask?.cancel()
-//
-//				searchTask = Task {
-//
-//					let query = newValue
-//						.trimmingCharacters(in: .whitespacesAndNewlines)
-//
-//					if query.count < 2 {
-//						await viewModel.searchCities()
-//						return
-//					}
-//
-//					try? await Task.sleep(
-//						for: .milliseconds(400)
-//					)
-//
-//					guard !Task.isCancelled else {
-//						return
-//					}
-//
-//					await viewModel.searchCities()
-//				}
-//			}
 			.onAppear {
 				isFocused = true
 			}
